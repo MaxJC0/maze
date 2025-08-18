@@ -1,16 +1,49 @@
 from random import randint
 
 def pos(maze, pos):
+    """
+    Returns the value at the specified position in the maze.
+    Args:
+        maze (list of list): A 2D list representing the maze grid.
+        pos (tuple): A tuple (row, column) specifying the position in the maze.
+    Returns:
+        The value at the given position in the maze grid.
+    """
+    
     return (maze[pos[0]][pos[1]])
 
 def pos_in(maze, pos):
+    """
+    Checks if the given position is within the bounds of the maze. (inside the border)
+    Args:
+        maze (list of list): A 2D list representing the maze grid.
+        pos (tuple): A tuple (row, column) specifying the position in the maze.
+    Returns:
+        bool: True if the position is within bounds, False otherwise.
+    """
     return (pos[0] > 0 and pos[0] < len(maze)-1 and pos[1] > 0 and pos[1] < len(maze[0])-1)
 
 def path(maze, pos):
+    """
+    Carves a path in the maze by marking the current position as empty.
+    Args:
+        maze (list of list): A 2D list representing the maze grid.
+        pos (tuple): A tuple (row, column) specifying the position in the maze.
+    Returns:
+        list of list: The updated maze grid with the path carved.
+    """
     maze[pos[0]][pos[1]] = " "
     return maze
 
 def create_maze(width, height):
+    """
+    Creates a random maze with the specified width and height.
+    Args:
+        width (int): The width of the maze.
+        height (int): The height of the maze.
+    Returns:
+        maze (2D list): A 2D list representing the maze grid.
+    """
     maze = [['█' for _ in range(width)] for _ in range(height)]
     goal = (randint(1, height - 2), randint(1, width - 2))
     print(f"Goal position: {goal}")
@@ -44,8 +77,9 @@ def create_maze(width, height):
             if backtrack_attempts < 1 and len(backtrack_stack) > 0:
                 current_pos = backtrack_stack.pop()
                 backtrack_attempts += 1
-            else:
-                print(f"current_pos: {current_pos}, next_pos: {next_pos}, goal_pos: {goal_pos} posin: {pos_in(maze, goal_pos)}")
+            else:       
+                # If the goal is near the border (within 2 steps), 
+                # check if next_pos is already at the border before carving a path.
                 if not pos_in(maze, next_pos):
                     maze = path(maze, next_pos)
                 else:
