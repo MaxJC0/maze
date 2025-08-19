@@ -46,7 +46,6 @@ def create_maze(width, height):
     """
     maze = [['█' for _ in range(width)] for _ in range(height)]
     goal = (randint(1, height - 2), randint(1, width - 2))
-    print(f"Goal position: {goal}")
     current_pos = goal
     maze[goal[0]][goal[1]] = '0'
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # right, down, left, up
@@ -82,9 +81,13 @@ def create_maze(width, height):
                 # check if next_pos is already at the border before carving a path.
                 if not pos_in(maze, next_pos):
                     maze = path(maze, next_pos)
+                    start = next_pos
                 else:
                     maze = path(maze, next_pos)
                     maze = path(maze, goal_pos)
+                    start = goal_pos
+                print(f"Start position: {start}, Goal position: {goal}")
+                print("\n")
                 break
 
     return maze
