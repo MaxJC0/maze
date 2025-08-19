@@ -21,7 +21,7 @@ class Maze():
     def pos_in(self, pos):
         return (pos[0] > 0 and pos[0] < self.height-1 and pos[1] > 0 and pos[1] < self.width-1)
     
-    def check_neighbours(self, pos):
+    def check_neighbours(self, pos): #TODO fix this doesnt work as intended
         neighbours = []
         for direction in self.directions:
             neighbour = self.move(pos, direction)
