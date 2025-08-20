@@ -1,4 +1,5 @@
 from random import randint
+import time
 
 class Maze():
     def __init__(self, width, height):
@@ -21,18 +22,14 @@ class Maze():
     def pos_in(self, pos):
         return (pos[0] > 0 and pos[0] < self.height-1 and pos[1] > 0 and pos[1] < self.width-1)
     
-    def check_neighbours(self, pos): #TODO fix this doesnt work as intended
-        neighbours = []
+    def check_neighbours(self, pos):
+        #print(f"Checking neighbours for position {pos}")
+        if self.pos(pos) != '█':
+            return False  # Only check for wall segments
         for direction in self.directions:
             neighbour = self.move(pos, direction)
-            if self.pos_in(neighbour):
-                neighbours.append(neighbour)
-        for neighbour in neighbours:
-            for direction in self.directions:
-                if self.move(neighbour, direction) == pos:
-                    continue
-                elif self.pos(self.move(neighbour, direction)) == '█':
-                    return True
+            if self.pos_in(neighbour) and self.pos(neighbour) == '█':
+                return True 
         return False
 
     def path(self, pos):
@@ -67,7 +64,12 @@ class Maze():
         backtrack_stack = [current_pos]
         backtrack_attempts = 0
         prev_dir = None
+        start_time = time.time()
         while True:
+            if time.time() - start_time > 10:
+                print("10 seconds timeout reached.")
+                break
+
             # self.print_maze()
             if prev_dir is not None:
                 directions = [d for d in self.directions if d != prev_dir]
@@ -96,7 +98,6 @@ class Maze():
 
             else:
                 if backtrack_attempts < 3 and len(backtrack_stack) > 0:
-                    current_pos = backtrack_stack.pop()
                     current_pos = backtrack_stack.pop()
 
                     backtrack_attempts += 1
