@@ -22,7 +22,7 @@ class Maze():
     def pos_in(self, pos):
         return (pos[0] > 0 and pos[0] < self.height-1 and pos[1] > 0 and pos[1] < self.width-1)
     
-    def check_neighbours(self, pos):
+    def check_neighbours(self, pos):    #TODO momentan kann es stuck sein glaube ich in dem fall muss man backtrcken
         #print(f"Checking neighbours for position {pos}")
         if self.pos(pos) != '█':
             return False  # Only check for wall segments
