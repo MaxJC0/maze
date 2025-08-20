@@ -48,17 +48,17 @@ class Maze():
     def check_validity(self, cur, next, goal):
         if self.pos(cur) == '0':
             if not self.pos_in(goal):
-                print(f"Goal position {goal} is out of bounds, skipping.")
-                return False
+                #print(f"Goal position {goal} is out of bounds, skipping.")
+                return 2
         if self.pos_in(goal):
             if self.pos(next) == '0' or self.pos(goal) == '0':
-                print(f"Next position {next} or Goal position {goal} is already part of the path, skipping.")
-                return False
+                #print(f"Next position {next} or Goal position {goal} is already part of the path, skipping.")
+                return 2
             if not self.check_neighbours(next) or not self.check_neighbours(goal):
-                print(f"Next position {next} or Goal position {goal} is not surrounded by walls, skipping.")
-                return False
-            return True
-        return False
+                #print(f"Next position {next} or Goal position {goal} is not surrounded by walls, skipping.")
+                return 2
+            return 1
+        return 0
 
     def generate(self):
         self.goal = (randint(1, self.height - 2), randint(1, self.width - 2))
@@ -66,13 +66,21 @@ class Maze():
         current_pos = self.goal
         backtrack_stack = [current_pos]
         backtrack_attempts = 0
+        prev_dir = None
         while True:
             # self.print_maze()
-            dir = self.directions[randint(0, 3)]
+            if prev_dir is not None:
+                directions = [d for d in self.directions if d != prev_dir]
+                dir = directions[randint(0, 2)]
+            else:
+                dir = self.directions[randint(0, 3)]
+
             next_pos = self.move(current_pos, dir)
             goal_pos = self.move(next_pos, dir)
 
-            if self.check_validity(current_pos, next_pos, goal_pos):
+            validity = self.check_validity(current_pos, next_pos, goal_pos)
+
+            if validity == 1:
                 self.path(next_pos)
                 self.path(goal_pos)
 
@@ -80,13 +88,19 @@ class Maze():
                 current_pos = goal_pos
                 backtrack_attempts = 0
 
-                print(f"Moving {self.direction_names[dir]} to {current_pos}")
+                #print(f"Moving {self.direction_names[dir]} to {current_pos}")
+            
+            elif validity == 2:
+                prev_dir = dir
+                continue
 
             else:
-                if backtrack_attempts < 1 and len(backtrack_stack) > 0:
+                if backtrack_attempts < 3 and len(backtrack_stack) > 0:
                     current_pos = backtrack_stack.pop()
+                    current_pos = backtrack_stack.pop()
+
                     backtrack_attempts += 1
-                    print(f"Backtracking to {current_pos}")
+                    #print(f"Backtracking to {current_pos}")
                 else:
                     if not self.pos_in(next_pos):
                         self.path(next_pos)
@@ -123,8 +137,8 @@ class Maze():
 
 
 def main():
-    for i in range(1):
-        maze = Maze(13, 13)
+    for i in range(3):
+        maze = Maze(21, 21)
         maze.generate()
         maze.print_maze()
 
