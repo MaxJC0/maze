@@ -22,14 +22,14 @@ class Maze():
     def pos_in(self, pos):
         return (pos[0] > 0 and pos[0] < self.height-1 and pos[1] > 0 and pos[1] < self.width-1)
     
-    def check_neighbours(self, pos):    #TODO momentan kann es stuck sein glaube ich in dem fall muss man backtrcken
-        #print(f"Checking neighbours for position {pos}")
+    def check_neighbours(self, pos): 
+        # print(f"Checking neighbours for position {pos}")
         if self.pos(pos) != '█':
             return False  # Only check for wall segments
         for direction in self.directions:
             neighbour = self.move(pos, direction)
-            if self.pos_in(neighbour) and self.pos(neighbour) == '█':
-                return True 
+            if self.pos(neighbour) == '█':
+                return True
         return False
 
     def path(self, pos):
@@ -45,14 +45,14 @@ class Maze():
     def check_validity(self, cur, next, goal):
         if self.pos(cur) == '0':
             if not self.pos_in(goal):
-                #print(f"Goal position {goal} is out of bounds, skipping.")
+                # print(f"Goal position {goal} is out of bounds, skipping.")
                 return 2
         if self.pos_in(goal):
             if self.pos(next) == '0' or self.pos(goal) == '0':
-                #print(f"Next position {next} or Goal position {goal} is already part of the path, skipping.")
+                # print(f"Next position {next} or Goal position {goal} is already part of the path, skipping.")
                 return 2
             if not self.check_neighbours(next) or not self.check_neighbours(goal):
-                #print(f"Next position {next} or Goal position {goal} is not surrounded by walls, skipping.")
+                # print(f"Next position {next} or Goal position {goal} is not surrounded by walls, skipping.")
                 return 2
             return 1
         return 0
@@ -63,7 +63,7 @@ class Maze():
         current_pos = self.goal
         backtrack_stack = [current_pos]
         backtrack_attempts = 0
-        prev_dir = None
+        prev_dir = []
         start_time = time.time()
         while True:
             if time.time() - start_time > 10:
@@ -71,9 +71,15 @@ class Maze():
                 break
 
             # self.print_maze()
-            if prev_dir is not None:
-                directions = [d for d in self.directions if d != prev_dir]
-                dir = directions[randint(0, 2)]
+            if len(prev_dir) > 0:
+                directions = [d for d in self.directions if d not in prev_dir]
+                if len(directions) < 1:
+                    # print("No valid directions left, backtracking.")
+                    current_pos = backtrack_stack.pop()
+                    prev_dir.clear()
+                    # self.print_maze(current_pos)
+                    continue
+                dir = directions[randint(0, len(directions) - 1)]
             else:
                 dir = self.directions[randint(0, 3)]
 
@@ -83,6 +89,7 @@ class Maze():
             validity = self.check_validity(current_pos, next_pos, goal_pos)
 
             if validity == 1:
+                prev_dir.clear()
                 self.path(next_pos)
                 self.path(goal_pos)
 
@@ -93,7 +100,7 @@ class Maze():
                 #print(f"Moving {self.direction_names[dir]} to {current_pos}")
             
             elif validity == 2:
-                prev_dir = dir
+                prev_dir.append(dir)
                 continue
 
             else:
@@ -130,11 +137,15 @@ class Maze():
                 print(f"{n} " + "  ".join(row))
             n += 1
         print("\n")
-    
-    def print_maze(self):
+
+    def print_maze(self, current_pos=None):
+        if current_pos is not None:
+            self.maze[current_pos[0]][current_pos[1]] = 'X'
         for row in self.maze:
             print(" ".join(row))
         print("\n")
+        if current_pos is not None:
+            self.maze[current_pos[0]][current_pos[1]] = ' '
 
 
 def main():
