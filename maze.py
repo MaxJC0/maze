@@ -117,6 +117,7 @@ class Maze():
                         self.path(next_pos)
                         self.path(goal_pos)
                         self.start = goal_pos
+                    self.set(self.start, '1')
                     print(f"Start position: {self.start}, Goal position: {self.goal} \n")
                     break
         return self.maze
@@ -147,11 +148,33 @@ class Maze():
         if current_pos is not None:
             self.maze[current_pos[0]][current_pos[1]] = ' '
 
+easy = 11
+experienced = 21
+hard = 31
+impossible = 41
 
 def main():
-    for i in range(3):
-        maze = Maze(21, 21)
-        maze.generate()
-        maze.print_maze()
+    print("Welcome to Maze Generator!")
+    difficulty = input("Choose difficulty (easy (0) | experienced (1) | hard (2) | impossible (3) | exit (q)): ").strip().lower()
+
+    if difficulty == "0":
+        size = easy
+    elif difficulty == "1":
+        size = experienced
+    elif difficulty == "2":
+        size = hard
+    elif difficulty == "3":
+        size = impossible
+    elif difficulty == "q":
+        print("Exiting...")
+        return
+    else:
+        print("Invalid difficulty, defaulting to easy.")
+        size = easy
+
+    maze = Maze(size, size)
+    maze.generate()
+    maze.print_maze_width_num()
+    input("Press Enter to exit...")
 
 main()
