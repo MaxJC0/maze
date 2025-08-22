@@ -1,5 +1,6 @@
 from random import randint
 import time
+import sys
 
 class Maze():
     def __init__(self, width, height):
@@ -148,33 +149,46 @@ class Maze():
         if current_pos is not None:
             self.maze[current_pos[0]][current_pos[1]] = ' '
 
-easy = 11
-experienced = 21
-hard = 31
-impossible = 41
-
-def main():
-    print("Welcome to Maze Generator!")
-    difficulty = input("Choose difficulty (easy (0) | experienced (1) | hard (2) | impossible (3) | exit (q)): ").strip().lower()
-
+def size_from_difficulty(difficulty):
     if difficulty == "0":
-        size = easy
+        return 11
     elif difficulty == "1":
-        size = experienced
+        return 21
     elif difficulty == "2":
-        size = hard
+        return 31
     elif difficulty == "3":
-        size = impossible
-    elif difficulty == "q":
+        return 41
+    else:
+        return 11
+
+def main(choice: str|None):
+    print("Welcome to Maze Generator!")
+    if choice is None:
+        try:
+            if sys.stdin.isatty():
+                choice = input("Choose difficulty (easy (0) | experienced (1) | hard (2) | impossible (3) | exit (q)): ").strip().lower()
+            else:
+                raise EOFError
+        except EOFError:
+            print("No interactive input available. Defaulting to easy.")
+            choice = "0"
+
+    if choice == "q":
         print("Exiting...")
         return
-    else:
-        print("Invalid difficulty, defaulting to easy.")
-        size = easy
 
+    size = size_from_difficulty(choice)
     maze = Maze(size, size)
     maze.generate()
     maze.print_maze_width_num()
-    input("Press Enter to exit...")
 
-main()
+    if sys.stdin.isatty():
+        try:
+            input("Press Enter to exit...")
+        except EOFError:
+            pass
+
+if __name__ == "__main__":
+    argv = sys.argv
+    diff_arg = argv[1] if len(argv) > 1 else None
+    main(diff_arg)
