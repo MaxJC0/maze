@@ -150,13 +150,13 @@ class Maze():
             self.maze[current_pos[0]][current_pos[1]] = ' '
 
 def size_from_difficulty(difficulty):
-    if difficulty == "0":
+    if difficulty == "1":
         return 11
-    elif difficulty == "1":
-        return 21
     elif difficulty == "2":
-        return 31
+        return 21
     elif difficulty == "3":
+        return 31
+    elif difficulty == "4":
         return 41
     else:
         return 11
@@ -166,7 +166,7 @@ def main(choice: str|None):
     if choice is None:
         try:
             if sys.stdin.isatty():
-                choice = input("Choose difficulty (easy (0) | experienced (1) | hard (2) | impossible (3) | exit (q)): ").strip().lower()
+                choice = input("Choose difficulty (easy (1) | experienced (2) | hard (3) | impossible (4) | exit (q)): ").strip().lower()
             else:
                 raise EOFError
         except EOFError:
@@ -180,7 +180,7 @@ def main(choice: str|None):
     size = size_from_difficulty(choice)
     maze = Maze(size, size)
     maze.generate()
-    maze.print_maze_width_num()
+    maze.print_maze()
 
     if sys.stdin.isatty():
         try:
