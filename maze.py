@@ -145,6 +145,7 @@ class Maze():
             self.maze[current_pos[0]][current_pos[1]] = 'X'
         for row in self.maze:
             print(" ".join(row))
+            time.sleep(0.05)
         if current_pos is not None:
             self.maze[current_pos[0]][current_pos[1]] = ' '
 
@@ -168,20 +169,30 @@ def tutorial_maze():
     maze.set([10 , 5], '1')
     maze.print_maze()
 
+def p(text, input=False):
+    if not input:
+        for char in text:
+            print(char, end="", flush=True)
+            time.sleep(0.02)
+        print()
+        time.sleep(2)
+    else:
+        for char in text:
+            print(char, end="", flush=True)
+            time.sleep(0.02)
+
 def tutorial():
-    print("Welcome to Maze Generator!")
-    time.sleep(1)
-    print("Lets start with a tutorial.")
-    time.sleep(1)
-    print("This is you first maze to solve:")
+    print("\033c", end="")
+    p("Welcome to Maze Generator!")
+    p("Lets start with a tutorial.")
+    p("This is you first maze to solve:")
     tutorial_maze()
-    time.sleep(1)
-    print("0 is the Goal and 1 is where you start.")
-    time.sleep(1)
-    print("Try solving this maze using the 'up' command.")
-    user_input = input("Write your command: ")
+    p("0 is the Goal and 1 is where you start.")
+    p("Try solving this maze using the 'up' command.")
+    p("Write your command: ", input=True)
+    user_input = input()
     if user_input.lower() in ["up", "down", "left", "right"]:
-        print(f"You entered: {user_input}. Great! Now try solving the maze on your own.")
+        p(f"You entered: {user_input}. Great! Now try solving the maze on your own.")
 
 def main(choice: str|None):
     tutorial()
