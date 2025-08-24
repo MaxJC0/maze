@@ -168,13 +168,23 @@ def tutorial_maze():
     maze.set([10 , 5], '1')
     maze.print_maze()
 
-def main(choice: str|None):
+def tutorial():
     print("Welcome to Maze Generator!")
+    time.sleep(1)
     print("Lets start with a tutorial.")
+    time.sleep(1)
     print("This is you first maze to solve:")
     tutorial_maze()
+    time.sleep(1)
     print("0 is the Goal and 1 is where you start.")
+    time.sleep(1)
+    print("Try solving this maze using the 'up' command.")
+    user_input = input("Write your command: ")
+    if user_input.lower() in ["up", "down", "left", "right"]:
+        print(f"You entered: {user_input}. Great! Now try solving the maze on your own.")
 
+def main(choice: str|None):
+    tutorial()
     if choice is None:
         try:
             if sys.stdin.isatty():
@@ -182,7 +192,7 @@ def main(choice: str|None):
             else:
                 raise EOFError
         except EOFError:
-            print("No interactive input available. Defaulting to easy.")
+            # print("No interactive input available. Defaulting to easy.")
             choice = "0"
 
     if choice == "q":
