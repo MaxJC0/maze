@@ -76,7 +76,8 @@ class Maze():
                 directions = [d for d in self.directions if d not in prev_dir]
                 if len(directions) < 1:
                     # print("No valid directions left, backtracking.")
-                    current_pos = backtrack_stack.pop()
+                    if len(backtrack_stack) > 0:
+                        current_pos = backtrack_stack.pop()
                     prev_dir.clear()
                     # self.print_maze(current_pos)
                     continue
@@ -119,7 +120,7 @@ class Maze():
                         self.path(goal_pos)
                         self.start = goal_pos
                     self.set(self.start, '1')
-                    print(f"Start position: {self.start}, Goal position: {self.goal} \n")
+                    # print(f"Start position: {self.start}, Goal position: {self.goal} \n")
                     break
         return self.maze
     
@@ -138,14 +139,12 @@ class Maze():
             else:
                 print(f"{n} " + "  ".join(row))
             n += 1
-        print("\n")
 
     def print_maze(self, current_pos=None):
         if current_pos is not None:
             self.maze[current_pos[0]][current_pos[1]] = 'X'
         for row in self.maze:
             print(" ".join(row))
-        print("\n")
         if current_pos is not None:
             self.maze[current_pos[0]][current_pos[1]] = ' '
 
@@ -161,8 +160,21 @@ def size_from_difficulty(difficulty):
     else:
         return 11
 
+def tutorial_maze():
+    maze = Maze(11, 11)
+    maze.set([5,5], '0')
+    for i in range(5):
+        maze.path([6 + i,5])
+    maze.set([10 , 5], '1')
+    maze.print_maze()
+
 def main(choice: str|None):
     print("Welcome to Maze Generator!")
+    print("Lets start with a tutorial.")
+    print("This is you first maze to solve:")
+    tutorial_maze()
+    print("0 is the Goal and 1 is where you start.")
+
     if choice is None:
         try:
             if sys.stdin.isatty():
@@ -180,7 +192,7 @@ def main(choice: str|None):
     size = size_from_difficulty(choice)
     maze = Maze(size, size)
     maze.generate()
-    maze.print_maze()
+    #maze.print_maze()
 
     if sys.stdin.isatty():
         try:
