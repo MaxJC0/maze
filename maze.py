@@ -178,7 +178,7 @@ def p(text, input=False):
             printed = printed[1:]
             time.sleep(0.02)
             if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
-                # If Enter is pressed, skip animation
+                sys.stdin.readline()
                 print(printed, end="", flush=True)
                 break
         print()
