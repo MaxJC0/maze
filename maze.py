@@ -176,11 +176,7 @@ def p(text, input=False):
         for char in text:
             print(char, end="", flush=True)
             printed = printed[1:]
-            time.sleep(0.02)
-            if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
-                sys.stdin.readline()
-                print(printed, end="", flush=True)
-                break
+            # time.sleep(0.02)
         print()
         time.sleep(2)
     else:
