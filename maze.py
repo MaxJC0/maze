@@ -1,6 +1,7 @@
 from random import randint
 import time
 import sys
+import select
 
 class Maze():
     def __init__(self, width, height):
@@ -170,10 +171,16 @@ def tutorial_maze():
     maze.print_maze()
 
 def p(text, input=False):
+    printed = text
     if not input:
         for char in text:
             print(char, end="", flush=True)
+            printed = printed[1:]
             time.sleep(0.02)
+            if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
+                # If Enter is pressed, skip animation
+                print(printed, end="", flush=True)
+                break
         print()
         time.sleep(2)
     else:
