@@ -1,10 +1,13 @@
 from random import randint
 import time
 import sys
-import select
 
 class Maze():
     def __init__(self, width, height):
+        """
+        Initialize the maze with the given width and height.
+        Creates a grid filled with walls and sets up directions.
+        """
         self.width = width
         self.height = height
         self.maze = [['█' for _ in range(width)] for _ in range(height)]
@@ -23,12 +26,21 @@ class Maze():
         }
 
     def get_position_value(self, pos):
+        """
+        Return the value at the given position in the maze grid.
+        """
         return self.maze[pos[0]][pos[1]]
     
     def pos_in(self, pos):
+        """
+        Check if the position is inside the maze boundaries (excluding borders).
+        """
         return (pos[0] > 0 and pos[0] < self.height-1 and pos[1] > 0 and pos[1] < self.width-1)
     
-    def check_neighbours(self, pos): 
+    def check_neighbours(self, pos):
+        """
+        Check if the wall segment at pos is adjacent to at least one other wall segment.
+        """
         if self.get_position_value(pos) != '█':
             return False  # Only check for wall segments
         for direction in self.directions:
@@ -38,16 +50,28 @@ class Maze():
         return False
 
     def path(self, pos):
+        """
+        Carve a path at the given position (set it to empty space).
+        """
         self.maze[pos[0]][pos[1]] = " "
         return self.maze
     
     def get_new_position(self, pos, direction):
+        """
+        Return a new position by moving from pos in the given direction.
+        """
         return (pos[0] + direction[0], pos[1] + direction[1])
 
     def set(self, pos, val):
+        """
+        Set the value at the given position in the maze grid.
+        """
         self.maze[pos[0]][pos[1]] = val
     
     def handleUserInput(self, user_input):
+        """
+        Handle user movement commands and update the maze accordingly.
+        """
         if user_input.lower() in ["up", "down", "left", "right"]:
             dir = self.direction_names[user_input.lower()]
             next_pos = self.get_new_position(self.location, dir)
@@ -59,6 +83,10 @@ class Maze():
             self.print_maze()
 
     def check_validity(self, cur, next, goal):
+        """
+        Check if the next and goal positions are valid for carving a path.
+        Returns 1 if valid, 2 if invalid, 0 if out of bounds.
+        """
         if self.get_position_value(cur) == '0':
             if not self.pos_in(goal):
                 return 2
@@ -71,6 +99,9 @@ class Maze():
         return 0
 
     def generate(self):
+        """
+        Generate the maze using randomized carving and backtracking.
+        """
         self.goal = (randint(1, self.height - 2), randint(1, self.width - 2))
         self.set(self.goal, '0')
         current_pos = self.goal
@@ -131,6 +162,9 @@ class Maze():
         return self.maze
     
     def print_maze_width_num(self):
+        """
+        Print the maze with row and column numbers for easier navigation.
+        """
         print(end="   ")
         for i in range(self.width):
             if i < 10:
@@ -147,6 +181,9 @@ class Maze():
             n += 1
 
     def print_maze(self, current_pos=None):
+        """
+        Print the maze to the console. Optionally highlight a current position.
+        """
         if current_pos is not None:
             self.maze[current_pos[0]][current_pos[1]] = 'X'
         for row in self.maze:
@@ -156,6 +193,9 @@ class Maze():
             self.maze[current_pos[0]][current_pos[1]] = ' '
 
 def size_from_difficulty(difficulty):
+    """
+    Return the maze size based on difficulty string.
+    """
     if difficulty == "1":
         return 11
     elif difficulty == "2":
@@ -168,6 +208,9 @@ def size_from_difficulty(difficulty):
         return 11
 
 def tutorial_maze():
+    """
+    Create and return a simple tutorial maze for demonstration purposes.
+    """
     maze = Maze(11, 11)
     maze.set([5,5], '0')
     for i in range(5):
@@ -179,6 +222,9 @@ def tutorial_maze():
     return maze
 
 def p(text, input=False):
+    """
+    Print text with optional animation. If input=True, animate slower for prompts.
+    """
     printed = text
     if not input:
         for char in text:
@@ -193,6 +239,9 @@ def p(text, input=False):
             time.sleep(0.02)
 
 def tutorial():
+    """
+    Run the interactive tutorial for the maze game.
+    """
     print("\033c", end="")
     p("Welcome to Maze Generator!")
     p("Lets start with a tutorial.")
@@ -217,6 +266,9 @@ def tutorial():
         p(f"You entered: {user_input}. Great! Now try solving the maze on your own.")
 
 def main(choice: str|None):
+    """
+    Main entry point for the maze game. Runs tutorial and main game loop.
+    """
     tutorial()
     if choice is None:
         try:
